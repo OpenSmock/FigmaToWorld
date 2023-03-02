@@ -4,8 +4,21 @@
 ![image](https://user-images.githubusercontent.com/125554080/222436375-9d1c8826-42eb-4b42-8fc7-7bff67d9e544.png)
 
 ## User guide
+First of all, you should know that this plugin is not yet published in the Figma community plugin library. So, to load and use it, you will need the desktop version of the Figma application.
 
-[🎥 Video demonstration 👩‍💻](https://github.com/OpenSmock/FigmaToWorld/blob/main/Video/FigmaToWorldDemo.mp4)
+Open the design you want to export and go to *Plugins>Development>Import plugin from manifest*, as shown in the image below.
+
+![image](https://user-images.githubusercontent.com/125554080/222474063-a5ea9a4a-0f3d-4080-8490-939c4e33fa3f.png)
+
+Then, the plugin will launch and should look something like that:
+
+![image](https://user-images.githubusercontent.com/125554080/222474347-19529758-cde7-4b46-ac7f-979c6fe80814.png)
+
+Here, you have two choices. Either you want your *JSON* file to have the same name as your design, in this case click directly on *Download your design to JSON*. Otherwise, enter the name that suits you. You will then be able to choose the location where to upload your file. 
+
+That's it, your JSON file is created !
+
+For more visual explanations, download the [🎥 Video demonstration 👩‍💻](https://github.com/OpenSmock/FigmaToWorld/blob/main/Video/FigmaToWorldDemo.mp4)
 
 ## Development guide
 
