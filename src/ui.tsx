@@ -35,12 +35,10 @@ function figmaPlugin() {
 
   console.log('check',documentTitle)
   /**
- * Returns a memoized version of the callback that only changes if one of the `inputs`
- * has changed (using ===).
+ * Returns a memorized version of the callback that only changes if one of the `inputs` has changed.
  */
-  const downloadJsonFile = useCallback(
-    function () {
-      on<ResponseJSON >("responseJSON", (json: string) => {   
+  const downloadJsonFile = useCallback(() => {
+      on<ResponseJSON >("responseJSON", (json: string) => {
         download(json, filename, defaultFilename)
       })
       /*delay to allow the loading state to be set. setTimeout() will execute the given input function after the timer is done.*/
