@@ -1,4 +1,9 @@
-# Preact Rectangles
+# FigmaToWorld Plugin 🌏
+
+## Presentation
+![image](https://user-images.githubusercontent.com/125554080/222436375-9d1c8826-42eb-4b42-8fc7-7bff67d9e544.png)
+
+## User guide
 
 ## Development guide
 
@@ -37,7 +42,7 @@ Use `console.log` statements to inspect values in your code.
 
 To open the developer console, search for and run `Open Console` via the Quick Actions search bar.
 
-## See also
+##Acknowledgments
 
 - [Create Figma Plugin docs](https://yuanqing.github.io/create-figma-plugin/)
 - [`yuanqing/figma-plugins`](https://github.com/yuanqing/figma-plugins#readme)
