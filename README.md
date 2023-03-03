@@ -91,3 +91,7 @@ $ npm run watch
 ## Acknowledgments 👐
 
 I would like to thank @yuanqinglim, @alexandrtovmach and @thomas-lowry for the help they provided through their librairies
+
+## License
+
+This project is licensed under the MIT License.
