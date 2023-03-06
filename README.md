@@ -3,7 +3,7 @@
 ## Presentation
 ![Untitled](https://user-images.githubusercontent.com/125554080/223069739-36f5525e-52bf-4433-86be-b450ef4e26f0.png)
 
-With FigmaToWorld, exporting your Figma design to a *JSON* file as never been so easy !
+With FigmaToWorld, exporting your Figma design to a *JSON* file has never been so easy !
 
 This plugin allows you to export the node tree of the Figma design  (.fig file) into a *JSON* file containing the same architecture.
 
