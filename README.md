@@ -1,4 +1,4 @@
-# FigmaToWorld Plugin 🌏
+# Figma To World - [version exemple : v0.1] 🌏
 
 ## Presentation
 FigmaToWorld plugin is one of the main parts of a larger project allowing to export Figma designs to Pharo.
@@ -13,7 +13,7 @@ Open the design you want to export and go to *Plugins>Development>Import plugin 
 
 Then, the plugin will launch and should look something like that:
 
-![image](https://user-images.githubusercontent.com/125554080/222474347-19529758-cde7-4b46-ac7f-979c6fe80814.png)
+![image](https://user-images.githubusercontent.com/125554080/223064976-c3979a29-f116-4edc-9bcd-acb5b8bdf0fd.png)
 
 Here, you have two choices. Either you want your *JSON* file to have the same name as your design, in this case click directly on *Download your design to JSON*. Otherwise, enter the name that suits you. You will then be able to choose the location where to upload your file. 
 
