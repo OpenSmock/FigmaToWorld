@@ -1,8 +1,11 @@
 # Figma To World - [version exemple : v0.1] 🌏
 
 ## Presentation
-FigmaToWorld plugin is one of the main parts of a larger project allowing to export Figma designs to Pharo.
-This first plugin, which will be followed by others, allows to export the node tree of the Figma design into a *JSON* file containing the same architecture.
+![Untitled](https://user-images.githubusercontent.com/125554080/223069739-36f5525e-52bf-4433-86be-b450ef4e26f0.png)
+
+With FigmaToWorld, exporting your Figma design to a *JSON* file as never been so easy !
+
+This plugin allows you to export the node tree of the Figma design  (.fig file) into a *JSON* file containing the same architecture.
 
 ## User guide
 First of all, you should know that this plugin is not yet published in the Figma community plugin library. So, to load and use it, you will need the desktop version of the Figma application.
