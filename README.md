@@ -1,4 +1,4 @@
-# Figma To World - [version exemple : v0.1] 🌏
+# Figma To World 🌏
 
 ## Presentation
 ![Untitled](https://user-images.githubusercontent.com/125554080/223069739-36f5525e-52bf-4433-86be-b450ef4e26f0.png)
