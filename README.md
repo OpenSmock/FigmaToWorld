@@ -1,7 +1,7 @@
 # Figma To World 🌏
 
 ## Presentation
-![Untitled](https://user-images.githubusercontent.com/125554080/223069739-36f5525e-52bf-4433-86be-b450ef4e26f0.png)
+![Untitled (Copy)](https://user-images.githubusercontent.com/125554080/224080561-0fa2fd11-3050-41a2-8756-79ffce4bb585.png)
 
 With FigmaToWorld, exporting your Figma design to a *JSON* file has never been so easy !
 
@@ -16,7 +16,8 @@ Open the design you want to export and go to *Plugins>Development>Import plugin 
 
 Then, the plugin will launch and should look something like that:
 
-![image](https://user-images.githubusercontent.com/125554080/223064976-c3979a29-f116-4edc-9bcd-acb5b8bdf0fd.png)
+![image](https://user-images.githubusercontent.com/125554080/224080766-ae84f6be-b6e9-4e84-8393-43c8a6b4bb72.png)
+
 
 Here, you have two choices. Either you want your *JSON* file to have the same name as your design, in this case click directly on *Download your design to JSON*. Otherwise, enter the name that suits you. You will then be able to choose the location where to upload your file. 
 
