@@ -22,8 +22,8 @@
     "editorType": [
       "figma"
     ],
-    "id": "Pluginv01",
-    "name": "PluginV01",
+    "id": "Figma To World - v0.1",
+    "name": "Figma To World - v0.1",
     "main": "src/main.ts",
     "ui": "src/ui.tsx"
   }
