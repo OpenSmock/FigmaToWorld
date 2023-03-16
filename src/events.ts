@@ -25,6 +25,20 @@ export interface ResponseJSON extends EventHandler {
   handler: (json: string) => void
 }
 
+/*request signal to get the Images data*/
+export interface RequestImages extends EventHandler {
+  name: "requestImages"
+  handler: () => void
+}
+
+/*response signal that brings the Images data*/
+export interface ResponseImages extends EventHandler {
+  name: "responseImages"
+ // handler: (bytesBuffer: ArrayBufferLike, imageHash: string) => void
+ // @ts-ignore
+ handler: (dict: Object) => void
+}
+
 /**
  * download function creates an URL containing the data in parameters and downloads it under the provided name
  * @param data The data to write in the file to be downloaded
@@ -44,3 +58,25 @@ export function download(data: string, filename: string, defaultFilename: string
     /*trigers the click on button event*/
     link.click()
   }
+
+  //export function downloadImages(bytesBuffer: ArrayBufferLike, imageHash: string) {
+    // @ts-ignore
+  export function downloadImages(dict: Object) {
+
+  for (const each in dict){
+     /*creates a blob object, which is a file like object of immutable raw data*/
+     // @ts-ignore
+ const blob = new Blob([dict[each]], { type: "image/png"  })
+ /*creates an URL containing the data*/
+ const URL = window.URL.createObjectURL(blob)
+ /*creates an ancor element*/
+ const link = document.createElement("a")
+ /*gives to the anchor element's href attribute the URL containing the data*/
+ link.href = URL
+ /*downloads the link under the filename or by default the document title*/
+ link.download = each
+ /*trigers the click on button event*/
+ link.click()
+  }
+    }
+

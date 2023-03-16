@@ -2,8 +2,8 @@ import { Button, Container, render, Textbox, VerticalSpace, Text } from "@create
 import { emit, on } from "@create-figma-plugin/utilities"
 import { h } from "preact"
 import { useCallback, useEffect, useState } from "preact/hooks"
-import { download } from "./events"
-import { RequestDesignTitle, ResponseDesignTitle, RequestJSON, ResponseJSON } from "./events"
+import { download, downloadImages } from "./events"
+import { RequestDesignTitle, ResponseDesignTitle, RequestJSON, ResponseJSON, RequestImages, ResponseImages } from "./events"
 
 /**
  * figmaPlugin function launches the plugin logic.
@@ -47,6 +47,19 @@ function figmaPlugin() {
     [filename, defaultFilename]
   )
 
+  const downloadImage = useCallback(() => {
+    //on<ResponseImages >("responseImages", (bytesBuffer: ArrayBufferLike, imageHash: string) => {
+    on<ResponseImages >("responseImages", (dict : Object) => {
+      //downloadImages(bytesBuffer, imageHash)
+      downloadImages(dict)
+    })
+    /*delay to allow the loading state to be set. setTimeout() will execute the given input function after the timer is done.*/
+    setTimeout(() => emit<RequestImages>("requestImages"), 200)
+  },
+  []
+)
+dict : Map<any, any>
+
 /*Background colors for the plugin UI*/
 const style = { backgroundColor: 'var(--figma-color-bg-hover)' }
 const style2 = { backgroundColor: 'var(--figma-color-bg-disabled)' }
@@ -69,6 +82,12 @@ const style3 = { backgroundColor: 'var(--figma-color-border-brand-strong)' }
         {"Download your design to JSON"}
       </Button>
       <VerticalSpace space='large' />
+      <VerticalSpace space='large' />
+      <Button style={style3} fullWidth onClick={downloadImage}>
+        {"Download your images"}
+      </Button>
+      <VerticalSpace space='large' />
+      
     </Container>
   )
 }
