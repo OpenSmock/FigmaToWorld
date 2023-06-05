@@ -1,6 +1,6 @@
 import { emit, on, showUI } from "@create-figma-plugin/utilities"
 import { nodeToObject } from "@figma-plugin/helpers"
-import { RequestDesignTitle, ResponseDesignTitle, RequestJSON, ResponseJSON,RequestImages, ResponseImages} from "./events"
+import { RequestDesignTitle, ResponseDesignTitle, RequestJSON, ResponseJSON,RequestImages, ResponseImages, getChildrenNodeImage} from "./events"
 
 /**
  * Main function.
@@ -56,9 +56,18 @@ export default function main() {
     }
     console.log("dict", dict)
 
-    emit<ResponseImages >("responseImages", dict)
+   emit<ResponseImages >("responseImages", dict)
     //emit<ResponseImages >("responseImages", bytesBuffer, imageHash)
   })
+
+  /*on<RequestImages>("requestImages", async function () { 
+    var dict= {}
+    const dict2={}
+    const dictBytes={}
+    const node= figma.root
+    dict=getChildrenNodeImage({ node, dict: dict2 })
+    emit<ResponseImages >("responseImages", dict )
+  })*/
 
 
   

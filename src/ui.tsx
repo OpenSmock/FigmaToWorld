@@ -2,7 +2,7 @@ import { Button, Container, render, Textbox, VerticalSpace, Text } from "@create
 import { emit, on } from "@create-figma-plugin/utilities"
 import { h } from "preact"
 import { useCallback, useEffect, useState } from "preact/hooks"
-import { download, downloadImages } from "./events"
+import { download, downloadImages, getChildrenNodeImage } from "./events"
 import { RequestDesignTitle, ResponseDesignTitle, RequestJSON, ResponseJSON, RequestImages, ResponseImages } from "./events"
 
 /**
@@ -17,7 +17,8 @@ function figmaPlugin() {
   
   /*filename and defaut filename declaration*/
   const filename = newFileName || ``
-  const defaultFilename= `${documentTitle}`
+  //const defaultFilename= `${documentTitle}`
+  const defaultFilename= `EXPORT`
   
   
 
@@ -48,9 +49,10 @@ function figmaPlugin() {
   )
 
   const downloadImage = useCallback(() => {
-    //on<ResponseImages >("responseImages", (bytesBuffer: ArrayBufferLike, imageHash: string) => {
+   // on<ResponseImages >("responseImages", (bytesBuffer: ArrayBufferLike, imageHash: string) => {
     on<ResponseImages >("responseImages", (dict : Object) => {
       //downloadImages(bytesBuffer, imageHash)
+      
       downloadImages(dict)
     })
     /*delay to allow the loading state to be set. setTimeout() will execute the given input function after the timer is done.*/
