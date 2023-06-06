@@ -1,7 +1,6 @@
 import { emit, on, showUI } from "@create-figma-plugin/utilities"
 import { nodeToObject } from "@figma-plugin/helpers"
-import { RequestDesignTitle, ResponseDesignTitle, RequestJSON, ResponseJSON,RequestImages, ResponseImages, getChildrenNodeImage} from "./events"
-
+import { RequestDesignTitle, ResponseDesignTitle, RequestJSONAndImages, ResponseJSONAndImages} from "./events"
 /**
  * Main function.
  * This  function is the entry point of the plugin.
@@ -16,62 +15,85 @@ export default function main() {
     emit<ResponseDesignTitle>("responseDesignTitle", title)
   })
 
-  on<RequestJSON>("requestJSON", async function () { 
-    /*Transforms the figma design root node to an object with an assigned key. If not used we only get the id of the root in the JSON file. 
-    For more info: https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/5f3a767/src/helpers/nodeToObject.ts#L14
-    https://github.com/figma-plugin-helper-functions/figma-plugin-helpers/blob/5f3a767212da804054dbb97e0c39c161c5b03f22/docs/modules/_nodetoobject_.md*/
-    const json = nodeToObject(figma.root)
-  
-    /*JSON.stringify converts the javascript values of the root to a JSON string. Here, '\t' is also inserted before every nested object or array to create indentation*/
-    emit<ResponseJSON >("responseJSON", JSON.stringify(json, null, '\t'))
-  })
+  on<RequestJSONAndImages>("requestJSON", async function (jsondropdownValue, imagesdropdownValue) {   
+    let jsonChoice;
+    let imageChoice;
+    let json;
 
-  on<RequestImages>("requestImages", async function () { 
-    //const element= figma.currentPage.selection[0]
-    const dict= {}
-    for (const element of figma.currentPage.selection){
+    if (jsondropdownValue === 'Everything') {
+      jsonChoice = figma.root;
+      json = JSON.stringify(nodeToObject(jsonChoice), null, '\t');
+    } else if (jsondropdownValue === 'Selection') {
+      jsonChoice= figma.currentPage.selection;
+      
+      if (jsonChoice.length >0){
+        json = JSON.stringify(nodeToObject(jsonChoice[0]), null, '\t');
+        for (let i = 1; i < jsonChoice.length; i++){
+          json += "," + JSON.stringify(nodeToObject(jsonChoice[i]), null, '\t');}
+      } else{
+        json = " You need to select an element to export !!!"
+      }
+     
+    } else {
+      jsonChoice = figma.currentPage;
+      json = JSON.stringify(nodeToObject(jsonChoice), null, '\t');
+    }
+
+    console.log("current json choice", jsonChoice)
+    if (imagesdropdownValue === 'Everything') {
+      imageChoice = figma.root;
+    } else if (imagesdropdownValue === 'Selection') {
+      imageChoice = figma.currentPage.selection;
+    } else {
+      imageChoice = figma.currentPage;
+    }
+    console.log("current image choice", imageChoice)
+  
+    // @ts-ignore
+    const nodeHasImages = (node) => node.type === 'RECTANGLE' && node.fills.some((fill) => fill.type == 'IMAGE');
+    //const images= getImages(figma.root);
+     // @ts-ignore
+    let imagesNode = []
+
+  if (Array.isArray(imageChoice)) {
+      for (const node of imageChoice) {
+        if (node.findAll) {
+          // @ts-ignore
+          imagesNode = imagesNode.concat(
+            node.findAll(nodeHasImages)
+          );
+        } else if (nodeHasImages(node)) {
+          imagesNode.push(node);
+        }
+      }
+    } else {
       // @ts-ignore
-      console.log("element", element)
+      imagesNode = imagesNode.concat(
+        figma.root.findAll(nodeHasImages)
+      );
+    }
+
+   const images={};
+   for (const element of imagesNode){
       // @ts-ignore
       const paint=element.fills[0]
-      // @ts-ignore
-      console.log("paint", paint)
     
       const imageHash = paint.imageHash
-      // @ts-ignore
-      console.log("imageHash", imageHash)
     // @ts-ignore
       const image = figma.getImageByHash(paint.imageHash)
-      // @ts-ignore
-      console.log("image", image)
-    
         // @ts-ignore
       const bytes = await image.getBytesAsync()
-      // @ts-ignore
-      console.log("bytes", bytes)
-
       const bytesBuffer = bytes.buffer
       // @ts-ignore
-      dict[imageHash]=bytesBuffer
+      images[imageHash]=bytesBuffer
     }
-    console.log("dict", dict)
-
-   emit<ResponseImages >("responseImages", dict)
-    //emit<ResponseImages >("responseImages", bytesBuffer, imageHash)
+    /*JSON.stringify converts the javascript values of the root to a JSON string. Here, '\t' is also inserted before every nested object or array to create indentation*/
+    // @ts-ignore
+    emit<ResponseJSON >("responseJSON", json, images)
   })
 
-  /*on<RequestImages>("requestImages", async function () { 
-    var dict= {}
-    const dict2={}
-    const dictBytes={}
-    const node= figma.root
-    dict=getChildrenNodeImage({ node, dict: dict2 })
-    emit<ResponseImages >("responseImages", dict )
-  })*/
-
-
-  
+ 
   /*Figma ShowUI function, enables the rendering of the user interface. For more info: https://www.figma.com/plugin-docs/api/properties/figma-showui/*/
-  showUI({ height: 206, width: 600 })
+  showUI({ height:280, width: 300 })
   
 }

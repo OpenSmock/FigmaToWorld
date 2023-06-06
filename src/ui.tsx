@@ -1,9 +1,9 @@
-import { Button, Container, render, Textbox, VerticalSpace, Text } from "@create-figma-plugin/ui"
+import { Button, Container, render, Textbox, VerticalSpace, Text, Dropdown, Stack, Toggle } from "@create-figma-plugin/ui"
 import { emit, on } from "@create-figma-plugin/utilities"
-import { h } from "preact"
+import { h, JSX } from "preact"
 import { useCallback, useEffect, useState } from "preact/hooks"
-import { download, downloadImages, getChildrenNodeImage } from "./events"
-import { RequestDesignTitle, ResponseDesignTitle, RequestJSON, ResponseJSON, RequestImages, ResponseImages } from "./events"
+import { downloadJSONImages } from "./events"
+import { RequestDesignTitle, ResponseDesignTitle, RequestJSONAndImages, ResponseJSONAndImages} from "./events"
 
 /**
  * figmaPlugin function launches the plugin logic.
@@ -13,14 +13,14 @@ import { RequestDesignTitle, ResponseDesignTitle, RequestJSON, ResponseJSON, Req
 function figmaPlugin() {
   /*Definition of two states for the document title and the filename to be saved as strings. This allows us to preserve the value between renders. For more info: https://www.geeksforgeeks.org/what-is-usestate-in-react/ and https://beta.reactjs.org/reference/react/useState*/
   const [documentTitle, setDocumentTitle] = useState<string | null>(null)
-  const [newFileName, setNewFileName] = useState<string | null>(null)
+  const [jsondropdownValue, setJsonDropdownValue] = useState<string>('Page')
+  const [imagesdropdownValue, setImagesDropdownValue] = useState<string>('Page')
+  const [toggleValue, setToggleValue] = useState<boolean>(true);
   
-  /*filename and defaut filename declaration*/
-  const filename = newFileName || ``
-  //const defaultFilename= `${documentTitle}`
-  const defaultFilename= `EXPORT`
-  
-  
+  /*zip filename declaration*/
+  const filename = `${documentTitle}` 
+  const value= `${toggleValue}`
+  console.log("toggle", value)
 
   /*By using this Hook, you tell React that your component needs to do something after render. 
   React will remember the function you passed (we’ll refer to it as our “effect”), 
@@ -31,36 +31,23 @@ function figmaPlugin() {
     on<ResponseDesignTitle>(`responseDesignTitle`, (documentTitle) => {
       setDocumentTitle(documentTitle)
     })
-    emit<RequestDesignTitle>(`requestDesignTitle`)
+    setTimeout(() => emit<RequestDesignTitle>(`requestDesignTitle`), 200)
   }, [])
 
-  console.log('check',documentTitle)
+
+
   /**
  * Returns a memorized version of the callback that only changes if one of the `inputs` has changed.
  */
-  const downloadJsonFile = useCallback(() => {
-      on<ResponseJSON >("responseJSON", (json: string) => {
-        download(json, filename, defaultFilename)
+  const downloadJSONAndImages = useCallback(() => {
+      on<ResponseJSONAndImages>("responseJSON", (json: string, images: Object) => {
+        downloadJSONImages(json, images, filename, toggleValue )
       })
-      /*delay to allow the loading state to be set. setTimeout() will execute the given input function after the timer is done.*/
-      setTimeout(() => emit<RequestJSON>("requestJSON"), 200)
-    },
-    [filename, defaultFilename]
-  )
-
-  const downloadImage = useCallback(() => {
-   // on<ResponseImages >("responseImages", (bytesBuffer: ArrayBufferLike, imageHash: string) => {
-    on<ResponseImages >("responseImages", (dict : Object) => {
-      //downloadImages(bytesBuffer, imageHash)
       
-      downloadImages(dict)
-    })
-    /*delay to allow the loading state to be set. setTimeout() will execute the given input function after the timer is done.*/
-    setTimeout(() => emit<RequestImages>("requestImages"), 200)
-  },
-  []
-)
-dict : Map<any, any>
+      setTimeout(() => emit<RequestJSONAndImages>("requestJSON", jsondropdownValue, imagesdropdownValue), 200)
+    },
+    [jsondropdownValue, imagesdropdownValue, toggleValue, filename]
+  )
 
 /*Background colors for the plugin UI*/
 const style = { backgroundColor: 'var(--figma-color-bg-hover)' }
@@ -68,28 +55,54 @@ const style2 = { backgroundColor: 'var(--figma-color-bg-disabled)' }
 const style3 = { backgroundColor: 'var(--figma-color-border-brand-strong)' }
 
   return (
-    <Container  space='large' style={style}>
+    <Container  space='medium' style={style}>
       <VerticalSpace space='medium' />
       <div>
-        <Text style={{ marginBottom: 8 }}>Filename to be saved</Text>
-        <Textbox style={style2}
-          onInput={(e) => setNewFileName(e.currentTarget.value)}
-          placeholder='filename.json'
-          value={filename}
-          variant='border'
-        />
+        <Text style={{ marginBottom: 8, fontSize: 20}}>JSON</Text>
+        <VerticalSpace space='extraSmall' />
+        <Dropdown onChange={function (event: JSX.TargetedEvent<HTMLInputElement>) {
+              setJsonDropdownValue(event.currentTarget.value);
+            }} options={[{
+              value: 'Everything'
+            }, {
+              value: 'Page'
+            }, {
+              value: 'Selection'
+            }]} value={jsondropdownValue} variant="border" />
       </div>
+      <VerticalSpace space='extraLarge' />
+      <div>
+        <Text style={{ marginBottom: 8, fontSize: 20}}>Images</Text>
+        <VerticalSpace space='extraSmall' />
+        <Dropdown onChange={function (event: JSX.TargetedEvent<HTMLInputElement>) {
+              setImagesDropdownValue(event.currentTarget.value);
+            }} options={[{
+              value: 'Everything'
+            }, {
+              value: 'Page'
+            }, {
+              value: 'Selection'
+            }]} value={imagesdropdownValue} variant="border" />
+      </div>
+      <VerticalSpace space='extraLarge' />
+      <div>
+        <Text style={{ marginBottom: 8, fontSize: 20}}>Download</Text>
+        <VerticalSpace space='extraSmall' />
+        <Stack space="small">
+            <div >
+              <Toggle onChange={function (event: JSX.TargetedEvent<HTMLInputElement>) {
+              setToggleValue(event.currentTarget.checked);
+            }} value={toggleValue}>
+                <Text>{toggleValue ? 'JSON and Images': 'JSON'}</Text>
+              </Toggle>
+            </div>
+            </Stack>
       <VerticalSpace space='large' />
-      <Button style={style3} fullWidth onClick={downloadJsonFile}>
-        {"Download your design to JSON"}
+      <Button style={style3} onClick={downloadJSONAndImages}>
+      {"Download"}
       </Button>
-      <VerticalSpace space='large' />
-      <VerticalSpace space='large' />
-      <Button style={style3} fullWidth onClick={downloadImage}>
-        {"Download your images"}
-      </Button>
-      <VerticalSpace space='large' />
-      
+      <VerticalSpace space='extraLarge' />
+      </div>
     </Container>
   )
 }
