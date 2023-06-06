@@ -34,6 +34,9 @@
     "id": "Figma To World - v0.1",
     "name": "Figma To World - v0.1",
     "main": "src/main.ts",
-    "ui": "src/ui.tsx"
+    "ui": "src/ui.tsx",
+    "author": "Elisabeth Cabioch",
+    "license": "MIT",
+    "description": "This plugin helps you download your Figma design images and json"
   }
 }
