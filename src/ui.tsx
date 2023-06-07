@@ -1,63 +1,63 @@
-import { Button, Container, render, Textbox, VerticalSpace, Text, Dropdown, Stack, Toggle } from "@create-figma-plugin/ui"
+import { Button, Container, render, VerticalSpace, Text, Dropdown, Stack, Toggle } from "@create-figma-plugin/ui"
 import { emit, on } from "@create-figma-plugin/utilities"
 import { h, JSX } from "preact"
 import { useCallback, useEffect, useState } from "preact/hooks"
-import { downloadJSONImages } from "./events"
-import { RequestDesignTitle, ResponseDesignTitle, RequestJSONAndImages, ResponseJSONAndImages} from "./events"
+import { downloadJSONImages} from "./events"
+import { RequestDesignTitle, ResponseDesignTitle, RequestJSONAndImages, ResponseJSONAndImages } from "./events"
 
 /**
  * figmaPlugin function launches the plugin logic.
- * Check https://yuanqing.github.io/create-figma-plugin/recipes/ for more info on how to handle passing data between the plugin and UI.
  * @returns the plugin's UI HTML with according generated events
  */
-function figmaPlugin() {
-  /*Definition of two states for the document title and the filename to be saved as strings. This allows us to preserve the value between renders. For more info: https://www.geeksforgeeks.org/what-is-usestate-in-react/ and https://beta.reactjs.org/reference/react/useState*/
+function figmaToWorldPlugin() {
+
+  /* Background colors for the plugin UI */
+
+  const style = { backgroundColor: 'var(--figma-color-bg-hover)' }
+  const style2 = { backgroundColor: 'var(--figma-color-bg-disabled)' }
+  const style3 = { backgroundColor: 'var(--figma-color-border-brand-strong)' }
+
+  /* Definition of states from the document title and UI's dropdowns values. 
+  It allows to preserve the value between UI's/back-end messages exchanges (renders).*/
+
   const [documentTitle, setDocumentTitle] = useState<string | null>(null)
   const [jsondropdownValue, setJsonDropdownValue] = useState<string>('Page')
   const [imagesdropdownValue, setImagesDropdownValue] = useState<string>('Page')
-  const [toggleValue, setToggleValue] = useState<boolean>(true);
-  
-  /*zip filename declaration*/
-  const filename = `${documentTitle}` 
-  const value= `${toggleValue}`
-  console.log("toggle", value)
+  const [downloadValue, setDownloadValue] = useState<boolean>(true);
+  const [downloading, setDownloading] = useState<boolean>(false);
 
-  /*By using this Hook, you tell React that your component needs to do something after render. 
-  React will remember the function you passed (we’ll refer to it as our “effect”), 
-  and call it later after performing the DOM updates. 
-  In this effect, we set the document title, but we could also perform data fetching or call some other imperative API.
-  For more info: https://reactjs.org/docs/hooks-effect.html*/
-  useEffect(() => {
+  /* Retrieves the figma design's title and sets it into the variable documentTitle*/
+
+  useEffect(() => { 
     on<ResponseDesignTitle>(`responseDesignTitle`, (documentTitle) => {
       setDocumentTitle(documentTitle)
     })
     setTimeout(() => emit<RequestDesignTitle>(`requestDesignTitle`), 200)
   }, [])
 
-
-
-  /**
- * Returns a memorized version of the callback that only changes if one of the `inputs` has changed.
+  /* Sends data to the back-end so that the plugin will retrieve the images and json. 
+  Then, the download will be launched.
+  UseCallback returns a memorized version of the callback that only changes if one of the `inputs` 
+  (jsondropdownValue, imagesdropdownValue, downloadValue or documentTitle) has changed.
  */
   const downloadJSONAndImages = useCallback(() => {
+    setDownloading(true)
       on<ResponseJSONAndImages>("responseJSON", (json: string, images: Object) => {
-        downloadJSONImages(json, images, filename, toggleValue )
+        // @ts-ignore
+         downloadJSONImages(json, images, documentTitle, downloadValue)       
       })
-      
-      setTimeout(() => emit<RequestJSONAndImages>("requestJSON", jsondropdownValue, imagesdropdownValue), 200)
+      setTimeout(() => emit<RequestJSONAndImages>("requestJSON", jsondropdownValue, imagesdropdownValue), 400)
     },
-    [jsondropdownValue, imagesdropdownValue, toggleValue, filename]
+    [jsondropdownValue, imagesdropdownValue, downloadValue, documentTitle]
   )
 
-/*Background colors for the plugin UI*/
-const style = { backgroundColor: 'var(--figma-color-bg-hover)' }
-const style2 = { backgroundColor: 'var(--figma-color-bg-disabled)' }
-const style3 = { backgroundColor: 'var(--figma-color-border-brand-strong)' }
 
   return (
     <Container  space='medium' style={style}>
       <VerticalSpace space='medium' />
-      <div>
+      <div style={{
+        width: '87px',
+      }}>
         <Text style={{ marginBottom: 8, fontSize: 20}}>JSON</Text>
         <VerticalSpace space='extraSmall' />
         <Dropdown onChange={function (event: JSX.TargetedEvent<HTMLInputElement>) {
@@ -71,7 +71,9 @@ const style3 = { backgroundColor: 'var(--figma-color-border-brand-strong)' }
             }]} value={jsondropdownValue} variant="border" />
       </div>
       <VerticalSpace space='extraLarge' />
-      <div>
+      <div style={{
+        width: '87px'
+      }}>
         <Text style={{ marginBottom: 8, fontSize: 20}}>Images</Text>
         <VerticalSpace space='extraSmall' />
         <Dropdown onChange={function (event: JSX.TargetedEvent<HTMLInputElement>) {
@@ -88,18 +90,16 @@ const style3 = { backgroundColor: 'var(--figma-color-border-brand-strong)' }
       <div>
         <Text style={{ marginBottom: 8, fontSize: 20}}>Download</Text>
         <VerticalSpace space='extraSmall' />
-        <Stack space="small">
             <div >
               <Toggle onChange={function (event: JSX.TargetedEvent<HTMLInputElement>) {
-              setToggleValue(event.currentTarget.checked);
-            }} value={toggleValue}>
-                <Text>{toggleValue ? 'JSON and Images': 'JSON'}</Text>
+              setDownloadValue(event.currentTarget.checked);
+            }} value={downloadValue}>
+                <Text>{downloadValue ? 'JSON and Images': 'JSON'}</Text>
               </Toggle>
             </div>
-            </Stack>
       <VerticalSpace space='large' />
-      <Button style={style3} onClick={downloadJSONAndImages}>
-      {"Download"}
+      <Button style={style3} onClick={downloadJSONAndImages} disabled={downloading}>
+      {downloading ? "Please close plugin and relaunch" : "Download "}
       </Button>
       <VerticalSpace space='extraLarge' />
       </div>
@@ -107,4 +107,4 @@ const style3 = { backgroundColor: 'var(--figma-color-border-brand-strong)' }
   )
 }
 
-export default render(figmaPlugin)
+export default render(figmaToWorldPlugin)

@@ -1,13 +1,11 @@
 import { emit, on, showUI } from "@create-figma-plugin/utilities"
 import { nodeToObject } from "@figma-plugin/helpers"
-import { RequestDesignTitle, ResponseDesignTitle, RequestJSONAndImages, ResponseJSONAndImages} from "./events"
-/**
- * Main function.
- * This  function is the entry point of the plugin.
- */
+import { RequestDesignTitle, ResponseDesignTitle, RequestJSONAndImages, ResponseJSONAndImages } from "./events"
+
+/* Main function: plugin's (back-end) entry point */
 export default function main() {
 
-  /*on function registers an event handler for the given event name (here RequestDesignTitle). For more info: https://yuanqing.github.io/create-figma-plugin/utilities/*/
+  /*on function registers an event handler for the given event name (here RequestDesignTitle).*/
   on<RequestDesignTitle>("requestDesignTitle", async function () {
     /*Gets the figma page name*/
     const title = figma.root.name
@@ -20,6 +18,7 @@ export default function main() {
     let imageChoice;
     let json;
 
+    /*JSON.stringify converts the javascript values of the root to a JSON string. Here, '\t' is also inserted before every nested object or array to create indentation*/
     if (jsondropdownValue === 'Everything') {
       jsonChoice = figma.root;
       json = JSON.stringify(nodeToObject(jsonChoice), null, '\t');
@@ -27,11 +26,14 @@ export default function main() {
       jsonChoice= figma.currentPage.selection;
       
       if (jsonChoice.length >0){
-        json = JSON.stringify(nodeToObject(jsonChoice[0]), null, '\t');
+        json = "["+ JSON.stringify(nodeToObject(jsonChoice[0]), null, '\t');
         for (let i = 1; i < jsonChoice.length; i++){
-          json += "," + JSON.stringify(nodeToObject(jsonChoice[i]), null, '\t');}
+          json += "," + JSON.stringify(nodeToObject(jsonChoice[i]), null, '\t');
+        }
+        json += "]"
+
       } else{
-        json = " You need to select an element to export !!!"
+        json = "You need to select an element to export !!!"
       }
      
     } else {
@@ -39,7 +41,6 @@ export default function main() {
       json = JSON.stringify(nodeToObject(jsonChoice), null, '\t');
     }
 
-    console.log("current json choice", jsonChoice)
     if (imagesdropdownValue === 'Everything') {
       imageChoice = figma.root;
     } else if (imagesdropdownValue === 'Selection') {
@@ -47,12 +48,11 @@ export default function main() {
     } else {
       imageChoice = figma.currentPage;
     }
-    console.log("current image choice", imageChoice)
   
     // @ts-ignore
     const nodeHasImages = (node) => node.type === 'RECTANGLE' && node.fills.some((fill) => fill.type == 'IMAGE');
-    //const images= getImages(figma.root);
-     // @ts-ignore
+    
+    // @ts-ignore
     let imagesNode = []
 
   if (Array.isArray(imageChoice)) {
@@ -77,7 +77,6 @@ export default function main() {
    for (const element of imagesNode){
       // @ts-ignore
       const paint=element.fills[0]
-    
       const imageHash = paint.imageHash
     // @ts-ignore
       const image = figma.getImageByHash(paint.imageHash)
@@ -87,13 +86,10 @@ export default function main() {
       // @ts-ignore
       images[imageHash]=bytesBuffer
     }
-    /*JSON.stringify converts the javascript values of the root to a JSON string. Here, '\t' is also inserted before every nested object or array to create indentation*/
-    // @ts-ignore
-    emit<ResponseJSON >("responseJSON", json, images)
+    emit<ResponseJSONAndImages>("responseJSON", json, images)   
   })
 
- 
-  /*Figma ShowUI function, enables the rendering of the user interface. For more info: https://www.figma.com/plugin-docs/api/properties/figma-showui/*/
+  /*Enables the rendering of the user interface held in ui.tsx.*/
   showUI({ height:280, width: 300 })
-  
+ 
 }
