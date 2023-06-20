@@ -5,20 +5,16 @@ import { useCallback, useEffect, useState } from "preact/hooks"
 import { downloadJSONImages} from "./events"
 import { RequestDesignTitle, ResponseDesignTitle, RequestJSONAndImages, ResponseJSONAndImages } from "./events"
 
-/**
- * figmaPlugin function launches the plugin logic.
- * @returns the plugin's UI HTML with according generated events
- */
+/* figmaToWorldPlugin function launches the plugin logic.*/
 function figmaToWorldPlugin() {
 
   /* Background colors for the plugin UI */
-
   const style = { backgroundColor: 'var(--figma-color-bg-hover)' }
   const style2 = { backgroundColor: 'var(--figma-color-bg-disabled)' }
   const style3 = { backgroundColor: 'var(--figma-color-border-brand-strong)' }
 
-  /* Definition of states from the document title and UI's dropdowns values. 
-  It allows to preserve the value between UI's/back-end messages exchanges (renders).*/
+  /* Definition of states from the document title, UI's dropdowns/toggle values, as well as downloading state. 
+  It allows to preserve the value between UI's/back-end messages exchanges.*/
 
   const [documentTitle, setDocumentTitle] = useState<string | null>(null)
   const [jsondropdownValue, setJsonDropdownValue] = useState<string>('Page')
@@ -36,10 +32,8 @@ function figmaToWorldPlugin() {
   }, [])
 
   /* Sends data to the back-end so that the plugin will retrieve the images and json. 
-  Then, the download will be launched.
-  UseCallback returns a memorized version of the callback that only changes if one of the `inputs` 
-  (jsondropdownValue, imagesdropdownValue, downloadValue or documentTitle) has changed.
- */
+  Then, the download will be launched.*/
+
   const downloadJSONAndImages = useCallback(() => {
     setDownloading(true)
       on<ResponseJSONAndImages>("responseJSON", (json: string, images: Object) => {
@@ -51,7 +45,7 @@ function figmaToWorldPlugin() {
     [jsondropdownValue, imagesdropdownValue, downloadValue, documentTitle]
   )
 
-
+/* UI's rendered code */
   return (
     <Container  space='medium' style={style}>
       <VerticalSpace space='medium' />
