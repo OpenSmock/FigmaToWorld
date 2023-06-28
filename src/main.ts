@@ -65,9 +65,9 @@ export default function main() {
       imageChoice = figma.currentPage;
     }
   
-    /*Checks if the node is an image: in Figma, an image is a rectangle node with a fill of type "IMAGE"*/
+    /*Checks if the node is an image: in Figma, an image is a rectangle node with a fill of type "IMAGE" but ellipses/polygons/stars etc... may also contain images*/
     // @ts-ignore
-    const nodeHasImages = (node) => node.type === 'RECTANGLE' && node.fills.some((fill) => fill.type == 'IMAGE');
+    const nodeHasImages = (node) => (node.type === 'RECTANGLE' || node.type === 'ELLIPSE' || node.type === 'POLYGON' || node.type === 'STAR' || node.type === 'FRAME' || node.type === 'LINE') && node.fills.some((fill) => fill.type == 'IMAGE');
     
     /*Declaratin of the array that will store our images*/
     // @ts-ignore
