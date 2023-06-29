@@ -1,11 +1,12 @@
 # Figma To World 🌏
 
 ## Presentation
-![Untitled (Copy)](https://user-images.githubusercontent.com/125554080/224080561-0fa2fd11-3050-41a2-8756-79ffce4bb585.png)
+![Cover art](https://github.com/OpenSmock/FigmaToWorld/assets/125554080/a3806e74-77e2-4e60-913a-3bafae15b438)
+
 
 With FigmaToWorld, exporting your Figma design to a *JSON* file has never been so easy !
 
-This plugin allows you to export the node tree of the Figma design  (.fig file) into a *JSON* file containing the same architecture.
+This plugin allows you to export the node tree of the Figma design into a *JSON* file containing the same architecture. You can choose between several modes that allow you to download either the whole design, the current page or a selection.
 
 ## User guide
 First of all, you should know that this plugin is not yet published in the Figma community plugin library. So, to load and use it, you will need the desktop version of the Figma application.
@@ -16,7 +17,7 @@ Open the design you want to export and go to *Plugins>Development>Import plugin 
 
 Then, the plugin will launch and should look something like that:
 
-![image](https://user-images.githubusercontent.com/125554080/224080766-ae84f6be-b6e9-4e84-8393-43c8a6b4bb72.png)
+![image 1](https://github.com/OpenSmock/FigmaToWorld/assets/125554080/b59baabc-cc42-4ee8-98d7-2edf1c1eaeda)
 
 
 Here, you have two choices. Either you want your *JSON* file to have the same name as your design, in this case click directly on *Download your design to JSON*. Otherwise, enter the name that suits you. You will then be able to choose the location where to upload your file. 
