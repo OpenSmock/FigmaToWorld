@@ -25,9 +25,7 @@ Here, you have two choices. Either you want your *JSON* file to have the same na
 That's it, your *JSON* file is created !
 
 For more visual explanations:
-
-https://user-images.githubusercontent.com/125554080/222667705-13b0e896-e336-4311-947e-ecb3ad244541.mp4
-
+ *TO DO: INSERT Ddemonstration video*
 
 You can also download the video [🎥 here 👩‍💻](https://github.com/OpenSmock/FigmaToWorld/blob/main/Video/FigmaToWorldDemo.mp4)
 
